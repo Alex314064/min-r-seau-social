@@ -1,21 +1,18 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./components/home";
+import Home from "./components/Home";
 import Profile from "./components/Profile";
 import Register from "./components/Register";
+import Login from "./components/Login";
 import Header from "./components/Header";
-import { Logout } from "./components/Logout";
-import YourComponent from "./atoms/user";
 import Cookies from "js-cookie";
-import { useAtom } from "jotai";
-import { loggedUserAtom } from "./atoms/user";
+import useUser from "./hooks/UserHook";
 
-function App() {
+const App = () => {
   const token = Cookies.get("token");
-  const loggedUser = useAtom(loggedUserAtom);
-  if (token && !loggedUser) {
-    YourComponent();
-  }
+  const getUser = useUser(token);
+  token != null && getUser(token);
+
   return (
     <BrowserRouter>
       <Header />
@@ -23,11 +20,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/Register" element={<Register />} />
-        <Route path="/Logout" element={<Logout />} />
-        {/*  <Route path="/Login" element={<Login />} /> */}
+        <Route path="/Login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

@@ -1,27 +1,17 @@
-import Cookies from "js-cookie";
-import { loggedUserAtom, userAtom } from "../atoms/user";
-import { atom, useAtom } from "jotai";
+import useRegister from "../hooks/RegisterHook";
 
 const Register = () => {
-  const [loggedUser, setLoggedUser] = useAtom(loggedUserAtom);
-  const [user, setUser] = useAtom(userAtom);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const registerUrl = "http://localhost:1337/api/auth/local/register";
+  const register = useRegister();
 
-    const body = new FormData(e.target);
-    const response = await fetch(registerUrl, { body, method: "POST" });
-    console.log(body);
-    const responseBody = await response.json();
-    const {
-      user: { username },
-      jwt: responseJWT,
-    } = responseBody;
-    console.log(responseBody);
-    Cookies.set("token", responseJWT, { expires: null });
-    const connected = responseJWT ? true : false;
-    setLoggedUser(connected);
-    setUser(username);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const body = {
+      username: e.target.username.value,
+      email: e.target.email.value,
+      password: e.target.password.value,
+    };
+    const registerUrl = "http://localhost:1337/api/auth/local/register";
+    register({ body: JSON.stringify(body), url: registerUrl });
   };
 
   return (
